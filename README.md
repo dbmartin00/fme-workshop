@@ -1,8 +1,10 @@
-This README is not a walkthrough. It instructions for creating a workshop
+This README is not a walkthrough. These are instructions for creating a workshop for a customer.
 
 Using node.js
 
-Clone the fme-workshop repository.
+Clone the fme-workshop repository, 
+
+https://github.com/dbmartin00/fme-workshop
 
 ```
 npm install
@@ -38,6 +40,9 @@ node index.js
 You create a new Workshop project with the usual suspects for flags.
 
 A new ZIP is created in the downloads subdirectory and your email addresses are printed out as a comma-separated list.  You need to email your customers with the ZIP attachment yourself.  This is no longer done by Workshop.
+
+Your download ZIP is the only copy that exists when you create it.
+
 
 To be fixed...
 
