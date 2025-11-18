@@ -1,0 +1,10 @@
+{
+  "emails": [
+    "admin@example.com",
+    "developer@example.com",
+    "owner@example.com"
+  ],  
+  "apiKey": "sat.******** etc."
+  "accountIdentifier": "<from your logged in url>",
+  "orgIdentifier": "<from your logged in url>"
+}

@@ -18,7 +18,7 @@ function logStep(message) {
 logStep("Loading parameters...");
 
 const paramFile = fs.readdirSync(process.cwd())
-    .find(f => !f.endsWith('.json') && fs.readFileSync(f, 'utf8').trim().startsWith('{'));
+    .find(f => f.startsWith("config") && !f.endsWith('.json') && fs.readFileSync(f, 'utf8').trim().startsWith('{'));
 
 if (!paramFile) {
     console.error("No parameter file (JSON content without .json extension) found.");
@@ -386,7 +386,7 @@ async function createSplits() {
         })
         .catch(function(error) {
             if(error.response.status && error.response.status == 409) {
-                console.log('split already created');
+                console.log('split already created - ' + splitName);
             } else {
               console.log(error);
             }
@@ -481,7 +481,7 @@ async function createZip() {
             filesToArchive.push(splitName + '.html');
         }
     }
-    filesToArchive.push('README.html');
+    filesToArchive.push('README');
 
     try {
       const files = fs.readdirSync('images');
