@@ -1,0 +1,30 @@
+{
+    "name": "modal_madness",
+    "treatments": [
+        {
+            "name": "diet",
+            "description": "",
+            "configurations": "{\"title\":\"Eat a consistent, healthy diet.\",\"copy\":\"Put good things in, and get good things out.  You have to eat and drink the right stuff to thrive.\",\"imgSrc\":\"http://www.cortazar-split.com/workshop/images/apple.jpg\"}"
+        },
+        {
+            "name": "exercise",
+            "description": "",
+            "configurations": "{\"title\":\"Push your body to see it grow.\",\"copy\":\"Like good diet, exercise should be a daily endeavor.  It's easy to just go or a walk or a jog, no gym equipment necessary.  Modern fitness devices can gamify the process, providing you with excellent incentives to keep at it.\",\"imgSrc\":\"http://www.cortazar-split.com/workshop/images/runner.jpg\"}"
+        },
+        {
+            "name": "mindset",
+            "description": "",
+            "configurations": "{\"title\":\"Be of one mind.\",\"copy\":\"If you want pizza all the time, it's going to interfere with your goals.  Identify the difference between needs and wants.  Stay on track, especially at the beginning, and it will get easier to live your new life of healthy choices.\",\"imgSrc\":\"http://www.cortazar-split.com/workshop/images/meditation.jpg\"}"
+        }
+    ],
+    "defaultTreatment": "diet",
+    "baselineTreatment": "diet",
+    "trafficAllocation": 100,
+    "rules": [],
+    "defaultRule": [
+        {
+            "treatment": "diet",
+            "size": 100
+        }
+    ]
+}

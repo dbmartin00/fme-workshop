@@ -1,0 +1,38 @@
+{
+    "name": "form_follies",
+    "treatments": [
+        {
+            "name": "wide",
+            "description": "Conserve vertical real estate by displaying the form in a wide format"
+        },
+        {
+            "name": "basic",
+            "description": "Basic form in generic configuration"
+        },
+        {
+            "name": "y-axis",
+            "description": "Organize along y-axis, minimizing horizontal real estate",
+            "segments": [
+                "alpha_users"
+            ]
+        }
+    ],
+    "defaultTreatment": "basic",
+    "baselineTreatment": "basic",
+    "trafficAllocation": 100,
+    "rules": [],
+    "defaultRule": [
+        {
+            "treatment": "y-axis",
+            "size": 34
+        },
+        {
+            "treatment": "basic",
+            "size": 33
+        },
+        {
+            "treatment": "wide",
+            "size": 33
+        }
+    ]
+}

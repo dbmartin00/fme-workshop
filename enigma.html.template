@@ -1,0 +1,235 @@
+<html>
+<head>
+	<title>Split Instant Feature Impact Detection [IFID] Demo</title>
+<style>
+	body {
+  	  color: white;
+	  display: grid;
+	  place-items: center;
+	}
+
+	div.cta {
+		font-family: Helvetica, Charcoal, sans serif;
+		font-size: 50px;
+		color: black;
+		text-align: center;
+		background-color: #f2f2f2;
+		padding-top: 50px;
+  		padding-bottom: 50px;
+	}
+
+	div.cta-image {
+		text-align: center;
+	}
+
+	div.buttons {
+		text-align: center;
+		padding-top: 25px;
+	}
+
+	img {
+		width: 100%;
+	}
+
+	.button {
+		background-color: white; 
+		border-radius: 8px; 
+		border: 2px solid rgb(205, 45, 47);
+		color: rgb(205, 45, 47); 
+		font-size: 24px; 
+		box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+	}
+
+	.center {
+	  margin: 0;
+	  position: absolute;
+	  top: 50%;
+	  left: 50%;
+	  -ms-transform: translate(-50%, -50%);
+	  transform: translate(-50%, -50%);
+	}
+</style>
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="https://cdn.split.io/sdk/browser-suite-1.1.1.min.js"></script>
+
+<script>
+  let splitClientApiKey = '$$SPLIT_CLIENT_API_KEY$$';
+
+	function uuidv4() {
+	  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+	      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+	      return v.toString(16);
+	    });
+	}
+
+  const USER_ID = uuidv4();
+</script>
+
+<script>
+(function(w){
+  var g=w.__error={e1:[],l1(e){g.e1.push(e)},e2:[],l2(e){g.e2.push(e)}}
+  w.addEventListener('error', g.l1)
+  w.addEventListener('unhandledrejection', g.l2)
+}(window))
+</script>
+
+<script>
+	var start = new Date().getTime();
+
+	function logImpression(impressionData) {
+		console.log('impressionData', impressionData);
+	}
+
+    var suite = splitio.SplitSuite({
+      core: {
+        authorizationKey: splitClientApiKey, 
+        key: USER_ID,
+        trafficType: 'user',
+        labelsEnabled: true
+      },
+      startup: {
+        	readyTimeout: 10
+      },
+      impressionListener: {
+	    	logImpression: logImpression
+  		},
+  		scheduler: {
+  			impressionsRefreshRate: 5,
+  			eventsPushRate: 5
+  		},
+      storage: {
+        	type: 'LOCALSTORAGE',
+        	prefix: splitClientApiKey.substring(0, 8)
+      },
+      streamingEnabled: true,
+      debug: false
+    });
+
+  const initTimeInMillis = new Date().getTime();
+	var client = suite.client();
+
+	client.on(client.Event.SDK_READY, function() {
+		console.log('INIT TIME IN MILLIS: ' + (new Date().getTime() - initTimeInMillis));	
+		$(document).ready(() => {
+			drawUI();
+		});
+	});	
+
+	client.on(client.Event.SDK_READY_FROM_CACHE, function() {
+		console.log('SDK ready from cache in ' + (new Date().getTime() - initTimeInMillis) + 'ms');		
+		// $(document).ready(() => {
+		// 	drawUI();
+		// });
+	});
+
+	client.on(client.Event.SDK_UPDATE, function() {
+		console.log("SDK update!");
+		drawUI();
+	});
+
+	client.once(client.Event.SDK_READY_TIMED_OUT, function() {
+		console.log("SDK ready timed out!");
+	})
+
+	function handleTreatment(treatment) {
+	  if(treatment === 'red') {
+	    busyWait(200);
+	  } else if (treatment === 'blue') {
+	    busyWait(100);
+	  }  
+	}
+
+	function handleError() {
+		console.log('handleError');
+
+		const tee = client.getTreatment("erratum");
+		if(tee === 'on') {
+			console.log('erratum on');
+			if(Math.random() < 0.5) {
+				throw new Error("exception erratum on");
+				// SplitRumAgent.trackError('exception erratum on')				
+			}
+		}	else if (tee === 'off') {
+			console.log('erratum off');
+			if(Math.random() < 0.1) {
+				throw new Error("exception erratum off");
+				// SplitRumAgent.trackError('exception erratum off')				
+			}
+		}	else if (tee === 'control') {
+			console.log('SDK not available!');
+		}		
+	}
+
+	function busyWait(sleepInMs) {
+	    const date = Date.now();
+	    let currentDate = null;
+	    do {
+	        currentDate = Date.now();
+	    } while (currentDate - date < sleepInMs);
+	}
+
+	function drawUI() {
+		console.log('drawUI');
+
+		var attributes = {
+			now : new Date().getTime(), // any time as milliseconds since epoch
+			region : 'EU'
+		}
+		var result = client.getTreatmentWithConfig("enigma", attributes);
+		handleTreatment(result.treatment);
+
+		drawScreen(result);
+
+		handleError();
+	}
+
+	function drawScreen(splitResult) {
+		console.log("drawScreen");
+		var configs = JSON.parse(splitResult.config);
+		document.getElementById("call-to-action").innerHTML = configs.text;
+
+		var img = document.getElementById("banner-image");
+		img.src = configs.image;
+		img.style.width = configs.image_width;
+	}
+
+	function registerClick() {
+		// var start = new Date().getTime();
+
+        var regions = [ "US", "EU", "JP"];
+        var status = [ "silver", "gold", "platinum"];
+        var n = Math.floor(Math.random() * 100);
+        var m = Math.floor(Math.random() * 100);
+        var properties = {
+            region : regions[n % regions.length], 
+            status : status[m % status.length],
+            type : 'donate',
+            timeInRegistrationMs : new Date().getTime() - start
+        };
+        var queued = client.track ('click', 0, properties);
+        let time = new Date().getTime();
+        time = time - start;
+        
+        alert("tracking a click to split: " + queued);
+        //useWrapper();
+	}
+
+	function book() {
+		const startTime = new Date().getTime();
+		alert('book!');
+		const r = client.track('book', new Date().getTime() - startTime, {name: 'madrid', value: 42});
+		console.log(r);
+	}
+</script>
+</head>
+
+<body>
+	Multivariant Demo
+	<div id="call-to-action" class="cta"></div>
+	<div style="width: 40%;" class="cta-image"><img id="banner-image"/></div>
+	<div class="buttons" align="center">
+		<button class="button" onclick="book()">BOOK</button>
+	</div>
+</body>
+
+</html>

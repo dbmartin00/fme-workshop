@@ -1,0 +1,47 @@
+{
+    "name": "enigma",
+    "environment": {
+        "id": "05d79700-5500-11ee-be1a-0a4bcce84c30",
+        "name": "stage"
+    },
+    "trafficType": {
+        "id": "045cdde0-5500-11ee-be1a-0a4bcce84c30",
+        "name": "user"
+    },
+    "killed": false,
+    "treatments": [
+        {
+            "name": "blue",
+            "description": "Direct",
+            "configurations": "{\n  \"text\": \"Noon in Madrid\",\n  \"image\": \"http://www.cortazar-split.com/images/madrid_noon.jpg\"\n}"
+        },
+        {
+            "name": "red",
+            "description": "Indirect",
+            "configurations": "{\n  \"text\": \"Sunset over Madrid\",\n  \"image\": \"http://www.cortazar-split.com/images/madrid_sunset.jpg\"\n}"
+        },
+        {
+            "name": "green",
+            "description": "Emotional Appeal",
+            "configurations": "{\n  \"text\": \"Night in Madrid\",\n  \"image\": \"http://www.cortazar-split.com/images/madrid_night.jpg\"\n}"
+        }
+    ],
+    "defaultTreatment": "red",
+    "baselineTreatment": "red",
+    "trafficAllocation": 100,
+    "rules": [],
+    "defaultRule": [
+        {
+            "treatment": "blue",
+            "size": 33
+        },
+        {
+            "treatment": "red",
+            "size": 33
+        },
+        {
+            "treatment": "green",
+            "size": 34
+        }
+    ]
+}

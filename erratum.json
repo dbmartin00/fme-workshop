@@ -1,0 +1,36 @@
+{
+    "name": "erratum",
+    "environment": {
+        "id": "194da2f0-3e22-11ea-ba75-12f2f63694e5",
+        "name": "Prod-Default"
+    },
+    "trafficType": {
+        "id": "194c6a70-3e22-11ea-ba75-12f2f63694e5",
+        "name": "user"
+    },
+    "killed": false,
+    "treatments": [
+        {
+            "name": "on",
+            "description": ""
+        },
+        {
+            "name": "off",
+            "description": ""
+        }
+    ],
+    "defaultTreatment": "off",
+    "baselineTreatment": "off",
+    "trafficAllocation": 100,
+    "rules": [],
+    "defaultRule": [
+        {
+            "treatment": "on",
+            "size": 50
+        },
+        {
+            "treatment": "off",
+            "size": 50
+        }
+    ]
+}

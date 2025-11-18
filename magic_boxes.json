@@ -1,0 +1,53 @@
+{
+    "name": "magic_boxes",
+    "treatments": [
+        {
+            "name": "on",
+            "description": ""
+        },
+        {
+            "name": "off",
+            "description": ""
+        }
+    ],
+    "defaultTreatment": "off",
+    "baselineTreatment": "off",
+    "trafficAllocation": 100,
+    "rules": [
+        {
+            "buckets": [
+                {
+                    "treatment": "on",
+                    "size": 50
+                },
+                {
+                    "treatment": "off",
+                    "size": 50
+                }
+            ],
+            "condition": {
+                "combiner": "AND",
+                "matchers": [
+                    {
+                        "type": "IN_LIST_STRING",
+                        "attribute": "region",
+                        "strings": [
+                            "EU",
+                            "NA"
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "defaultRule": [
+        {
+            "treatment": "on",
+            "size": 10
+        },
+        {
+            "treatment": "off",
+            "size": 90
+        }
+    ]
+}

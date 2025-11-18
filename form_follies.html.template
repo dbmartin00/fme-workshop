@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+<title>Sample Survey Form</title>
+  <style>
+    /* Set the height and background color of the banner */
+    .banner {
+      padding: 20px;
+      background-color: #491b65;;
+      margin-bottom: 20px;
+    }
+
+    /* Center the logo vertically and horizontally */
+    .logo {
+      height: 60px;
+      display: flex;
+      justify-content: left;
+      align-items: left;
+    }
+
+    /* Style the logo image */
+    .logo img {
+      height: 60px;
+      padding: 10px;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+    
+
+    /* Style the banner text */
+    .text {
+      color: #fff;
+      text-align: center;
+      font-size: 24px;
+      margin-top: 10px;
+    }
+  </style>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<script src="https://cdn.split.io/sdk/split-10.22.4.min.js"></script>
+
+<script>
+
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+  }
+
+  const factory = splitio({
+    core: {
+      authorizationKey: '$$SPLIT_CLIENT_API_KEY$$',
+      key: uuidv4() // a different user with every page load
+    }
+  });
+
+  const client = factory.client();
+
+  $(document).ready(() => {
+
+    client.on(client.Event.SDK_READY, function() {
+      drawSurveyForm();
+    });  
+
+    client.on(client.Event.SDK_UPDATE, function() {
+      drawSurveyForm();
+    });
+  });
+
+  function drawSurveyForm() {
+    var treatment = client.getTreatment('form_follies');
+    console.log(treatment);
+    if (treatment === 'wide') {
+        $('#wide').show();
+        $('#basic').hide();
+        $('#yaxis').hide();
+    }   else if (treatment === 'basic') {
+        $('#wide').hide();
+        $('#basic').show();
+        $('#yaxis').hide();
+    }   else if (treatment === 'y-axis') {
+        $('#wide').hide();
+        $('#basic').hide();
+        $('#yaxis').show();
+    }   else {
+        $('#wide').hide();
+        $('#basic').show();
+        $('#yaxis').hide();
+    }    
+  }
+
+  function trackSurveySubmit() {
+    const props = {
+      'region': 'NA',
+      'status': 'gold'
+    }
+    const queued = client.track("user", "survey_submitted", 1, props);
+    console.log('queued event to split? ' + queued);
+  }
+</script>
+</head>
+<body>
+  <div class="banner"/>
+    <div class="logo">
+      <img src="images/logo-2023.svg" alt="Split Logo">
+    </div>
+  </div>
+  <div id="basic" hidden>
+    <div class="w-80 mx-auto flex content-center mb-4">
+<form>
+        <label class="block text-gray-700 text-sm font-bold mb-1 mt-3" for="username">Username</label>
+        <input type="text" id="firstName" name="firstName" placeholder="" value="" class=" appearance-none border-b border-purple-600 w-full py-2 px-0 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        
+        <label class="block text-gray-700 text-sm font-bold mb-1 mt-3" for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" placeholder="" value="" class=" appearance-none border-b border-purple-600 w-full py-2 px-0 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        
+        <label class="block text-gray-700 text-sm font-bold mb-1 mt-3" for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="" value="" class=" appearance-none border-b border-purple-600 w-full py-2 px-0 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        
+        <label class="block text-gray-700 text-sm font-bold mb-1 mt-3" for="zipCode">Zip Code</label>
+        <input type="text" id="zipCode" name="zipCode" placeholder="" value="" class=" appearance-none border-b border-purple-600 w-full py-2 px-0 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+
+        <button type="button" onclick="trackSurveySubmit()" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-5"/>Submit</button>
+
+      </form>
+    </div>
+  </div>
+  <div id="wide" hidden>
+    <div class="w-11/12 mx-auto flex content-center mb-4">
+      <form class="w-screen">
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="username">Username 2</label>
+        <input type="text" id="firstName" name="firstName" placeholder="" value="" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" placeholder="" value="" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="" value="" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="zipCode">Zip Code</label>
+        <input type="text" id="zipCode" name="zipCode" placeholder="" value="" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+
+        <button type="button" onclick="trackSurveySubmit()" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-5"/>Submit</button>
+      </form>
+    </div>
+  </div>
+  <div id="yaxis" hidden>
+    <div class="w-80 mx-auto flex content-center mb-4">
+      <form class="w-screen">
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="username">Username</label>
+        <input type="text" id="firstName" name="firstName" placeholder="" value="" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" placeholder="" value="" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="" value="" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="zipCode">Zip Code</label>
+        <input type="text" id="zipCode" name="zipCode" placeholder="" value="" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+
+        <button type="button" onclick="trackSurveySubmit()" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-5"/>Submit</button>
+      </form>
+    </div>
+  </div>
+</body>
+<script>
+  function toggleY() {
+    $('#yaxis').toggle();
+  }
+</script>
+</html

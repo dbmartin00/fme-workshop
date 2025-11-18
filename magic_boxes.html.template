@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Split Rollout Example</title>
+ <style>
+  html, body {
+   background: #F2F4F7;
+   font-family: sans-serif;
+}
+
+.root {
+}
+
+.box {
+    height: 70px;
+    line-height: 70px;
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 18px;
+    color: white;
+    margin: 1px;
+    border-radius: 2px;
+    /* outline: solid 1px black; */
+}
+
+ul {
+   display: inline-block;      
+}
+
+li {
+    display: inline-block;
+    /* vertical-align: top; */
+}
+
+/* Center the progress indicator */
+.progress-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Style the progress indicator */
+.progress {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid #ccc;
+  border-top-color: #DB00AD;
+  animation: spin 1s ease-in-out infinite;
+}
+
+/* Spin animation for the progress indicator */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
+<script src="https://cdn.split.io/sdk/split-10.22.4.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script>
+
+	    const key = '$$SPLIT_CLIENT_API_KEY$$';
+
+	    var factory = splitio({
+           startup: {
+               readyTimeout: 90
+           },
+           core: {
+               authorizationKey: key,
+               key: 'placeholder',
+               labelsEnabled: true
+           },
+           scheduler: {
+	           streamingEnabled: true
+	       },
+            debug: true
+       });
+
+	    client = factory.client();   		
+
+	    client.on(client.Event.SDK_READY, function() {
+           console.log('SDK_READY');
+           drawTable(factory);
+       });
+
+	    client.on(client.Event.SDK_UPDATE, function() {
+           console.log('SDK_UPDATE ' + new Date());
+           sleep(1000).then(function() {
+               drawTable(factory);
+           });
+       })
+
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function removeAllChildNodes(parent) {
+      while (parent.firstChild) {
+          parent.removeChild(parent.firstChild);
+      }
+  }
+
+  let treatments;
+
+  function drawTable(factory) {
+    $('#progress_indicator').show();
+
+    console.log('drawTable');
+    treatments = [];
+
+   $(document).ready(function(){
+        draw();
+    }); 
+  }
+
+function draw() {
+    let ul = document.getElementById('user-list');
+    removeAllChildNodes(ul);
+    
+    const startTimeInMillis = new Date().getTime();
+
+    getTreatments()
+    .then(() => {
+        for(const k in treatments) {
+            const treatment = treatments[k];
+            li = document.createElement("li");
+            let div = document.createElement("div");
+            renderCell(k, div, treatment);
+            li.appendChild(div);
+            ul.appendChild(li);            
+        }
+
+        $('#progress_indicator').hide();
+    });    
+}
+
+async function getTreatments() {
+    for(let i = 97; i < 104; i++) {
+        for(let j = 0; j < 7; j++) {
+            const key = String.fromCharCode(i) + j;
+
+            const c = factory.client(key);
+            await c.ready();
+
+            const attributes = {
+                row: String.fromCharCode(i),
+                col: j
+            }
+
+            treatments[key] = c.getTreatment("magic_boxes", attributes);
+            delete c;
+        }
+    }    
+}
+
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function renderCell(key, div, treatment) {
+    div.className = "box shadow-md";
+
+    div.style.fontSize = '18px';
+    div.appendChild(document.createTextNode(key));
+
+    if(treatment === 'on') {
+         div.style.backgroundColor = "hsl(194, 99%, 42%, 100%)";
+     } else if (treatment === 'off') {
+         div.style.backgroundColor = "hsl(346, 94%, 51%, 100%)";
+     } else if (treatment === 'default') {
+        div.style.backgroundColor = "hsl(74, 71%, 49%, 100%)";
+    } else if (treatment === 'fourth') {
+        div.style.backgroundColor = "hsl(329, 67%, 43%, 100%)";
+    } else if (treatment === 'fifth') {
+        div.style.backgroundColor = "hsl(52, 100%, 49%, 100%)";
+    } else {
+        console.log("unexpected treatment: " + treatment);
+        div.style.backgroundColor = "hsl(221, 43%, 11%, 100%)";
+    }    
+}
+
+</script>
+</head>
+<body>
+    <div class="container mx-auto">
+        <div>
+            <img src="images/logo-2023.svg" alt="Split's logo" class="mx-auto my-6"/>
+        </div>
+        <div class="root">
+            <div id="progress_indicator" class="progress-container text-center">
+                <div class="progress"></div>
+            </div>
+            <ul id="user-list" class="p-0">
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
