@@ -201,6 +201,8 @@ async function createEnvironment() {
 }
 
 async function findEnvironment() {
+    logStep("findEnvironment " + ENVIRONMENT_NAME + " for " + projectIdentifier);
+
     const url = 'https://api.split.io/internal/api/v2/environments/ws/' + projectIdentifier;
 
     const config = {
