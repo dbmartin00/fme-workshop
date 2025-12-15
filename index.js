@@ -275,6 +275,7 @@ async function createClientApiKey() {
 
 async function createSegments() {
     logStep("createSegments called");
+    await sleep(1000);
 
     const defsRaw = fs.readFileSync('segments');
     const defsJson = JSON.parse(defsRaw);
@@ -363,6 +364,33 @@ async function createSegments() {
         });
     }
 }
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function createSplitWithRetry(config, splitName, retryOn429 = true) {
+    logStep("createSplitWithRetry " + splitName);
+    try {
+        await axios(config);
+        console.log('created split ' + splitName);
+    } catch (error) {
+        const status = error?.response?.status;
+
+        if (status === 409) {
+            console.log('split already created - ' + splitName);
+            return;
+        } else if (status === 429 && retryOn429) {
+            console.log('Rate limited (429). Waiting 2 seconds and retrying...');
+            await sleep(2000);
+            return createSplit(config, splitName, false); // retry once
+        } else {
+            console.log(error);    
+        }
+
+    }
+}
+
 async function createSplits() {
     logStep("createSplits() called");
 
@@ -382,17 +410,7 @@ async function createSplits() {
             }
         };
 
-        await axios(config)
-        .then(function (response) {
-          console.log('created split ' + splitName);
-        })
-        .catch(function(error) {
-            if(error.response.status && error.response.status == 409) {
-                console.log('split already created - ' + splitName);
-            } else {
-              console.log(error);
-            }
-        });
+        await createSplitWithRetry(config, splitName, 1);  // 1 retry on 429
 
         config.method = 'post';
         config.url = 'https://api.split.io/internal/api/v2/splits/ws/' + projectIdentifier 
@@ -403,17 +421,7 @@ async function createSplits() {
         modalBody = modalBody.replace(/(\r\n|\n|\r)/gm, '');
         config.data = JSON.parse(modalBody);
 
-        await axios(config)
-        .then(function (response) {
-          console.log('updated split ' + splitName + '!');
-        })
-        .catch(function(error) {
-            if(error.response.status == 409) {
-                console.log('split already has a definition');
-            } else {
-              console.log(error);
-            }
-        });
+        await createSplitWithRetry(config, splitName, 1);
 
     }
 
