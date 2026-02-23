@@ -1,0 +1,15 @@
+{
+  "name": "fme-workshop",
+  "version": "1.0.0",
+  "description": "Harness FME workshop automation script",
+  "main": "index.js",
+  "type": "commonjs",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "jszip": "^3.10.1"
+  }
+}

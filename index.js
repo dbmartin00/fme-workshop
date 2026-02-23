@@ -49,9 +49,12 @@ for (const jsonFile of jsonFiles) {
 
     // Assume each file defines a feature flag with a name property
     const featureFlagName = data.name || path.basename(jsonFile, '.json');
-    splitNames.push(featureFlagName);
-
-    logStep(`Extracted feature flag: ${featureFlagName}`);
+    if(featureFlagName !== "fme-workshop") {
+      splitNames.push(featureFlagName);
+      logStep(`Extracted feature flag: ${featureFlagName}`);
+    } else {
+      logStep('Skipping JSON: ' + featureFlagName);
+    }
 }
 
 logStep(`Total feature flags loaded: ${splitNames.length}`);
@@ -95,11 +98,11 @@ async function createProject() {
         projectIdentifier = response?.data?.data?.project?.identifier;
         console.log('success! projectIdentifier: ' + projectIdentifier)
       })
-      .catch((error) => {
+      .catch(error => {
         if(error.response.data.code === 'DUPLICATE_FIELD') {
             console.log('project already created');
         } else {
-            console.error('Error creating project:', err);
+            console.error('Error creating project:', error);
         }
       });
     // If there's a 409 duplicate field error... 
@@ -395,6 +398,7 @@ async function createSplits() {
     logStep("createSplits() called");
 
     for(const splitName of splitNames) {
+        console.log('creating ' + splitName);
 
         const config = {
             method: 'post',

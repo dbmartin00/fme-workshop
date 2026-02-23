@@ -29,7 +29,7 @@ Your account level API key will need specific bindings:
 
  - FME Administrator
  - FME Manager
- - FME Account API
+ - FME Account API (or Account Admin)
 
 Run the generator
 
