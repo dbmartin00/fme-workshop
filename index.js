@@ -290,7 +290,14 @@ async function createSegments() {
 
         const data = {
             name: segment.name,
-            description: segment.description
+            description: segment.description,
+            owners: [
+            {
+              id: '_project_all_users',
+              type: 'Team',
+              name: 'All Users'
+            }
+          ]
         }
 
         const config = {
@@ -410,7 +417,14 @@ async function createSplits() {
             },
             data: {
                 name: splitName,
-                description: 'created for Split Workshop'
+                description: 'created for Split Workshop',
+                owners: [
+                {
+                  id: '_project_all_users',
+                  type: 'Team',
+                  name: 'All Users'
+                }
+              ]
             }
         };
 
