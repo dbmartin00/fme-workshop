@@ -46,12 +46,6 @@
         authorizationKey: '$$SPLIT_CLIENT_API_KEY$$',
         key: 'user_id' // unique identifier for your user
       },
-      urls: {
-        sdk: 'https://sdk.barclays.split.io/api',
-        events: 'https://events.barclays.split.io/api',
-        auth: 'https://auth.barclays.split.io/api',
-        telemetry: 'https://telemetry.barclays.split.io/api'
-      },
       scheduler: {
         eventsPushRate: 5
       }

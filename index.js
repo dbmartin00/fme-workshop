@@ -22,8 +22,23 @@ if (!validCommands.includes(command)) {
 }
 
 // API Base URLs - can be overridden via environment variables
-const HARNESS_API_BASE = process.env.HARNESS_API_BASE || 'https://fme-barclays-validation.harness.io';
-const SPLIT_API_BASE = process.env.SPLIT_API_BASE || 'https://api.barclays.split.io';
+const HARNESS_API_BASE = process.env.HARNESS_API_BASE || 'https://app.harness.io';
+const SPLIT_API_BASE = process.env.SPLIT_API_BASE || 'https://api.split.io';
+
+// Derive SDK URLs from SPLIT_API_BASE
+// Converts api.split.io -> sdk.split.io, events.split.io, etc.
+function deriveSDKUrls(apiBase) {
+    const url = new URL(apiBase);
+    const baseDomain = url.hostname.replace(/^api\./, '');
+    const protocol = url.protocol;
+
+    return {
+        sdk: `${protocol}//sdk.${baseDomain}/api`,
+        events: `${protocol}//events.${baseDomain}/api`,
+        auth: `${protocol}//auth.${baseDomain}/api`,
+        telemetry: `${protocol}//telemetry.${baseDomain}/api`
+    };
+}
 
 // Centralized API endpoints
 // NOTE: All Split.io API calls require 'x-api-key' header with a valid Admin API key
@@ -53,12 +68,7 @@ const API = {
             `${SPLIT_API_BASE}/internal/api/v2/splits/ws/${workspaceId}/${splitName}/environments/${envId}`
     },
     sdk: {
-        urls: {
-            sdk: 'https://sdk.barclays.split.io/api',
-            events: 'https://events.barclays.split.io/api',
-            auth: 'https://auth.barclays.split.io/api',
-            telemetry: 'https://telemetry.barclays.split.io/api'
-        }
+        urls: deriveSDKUrls(SPLIT_API_BASE)
     }
 };
 

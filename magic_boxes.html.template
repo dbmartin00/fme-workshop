@@ -77,12 +77,6 @@
         key: 'placeholder',
         labelsEnabled: true
       },
-      urls: {
-        sdk: 'https://sdk.barclays.split.io/api',
-        events: 'https://events.barclays.split.io/api',
-        auth: 'https://auth.barclays.split.io/api',
-        telemetry: 'https://telemetry.barclays.split.io/api'
-      },
       scheduler: {
         streamingEnabled: true
       },
