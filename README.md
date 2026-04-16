@@ -28,17 +28,19 @@ Copy `.env.example` to `.env` and customize for your environment:
 
 ```bash
 cp .env.example .env
+# Edit .env to set SPLIT_API_BASE and other variables
 ```
 
-**For Barclays deployment:**
+**For staging environment:**
 ```bash
-cp .env.barclays .env
+# Create .env with staging configuration
+echo "SPLIT_API_BASE=https://api.split-stage.io" > .env
 ```
 
 Or set environment variables directly:
 ```bash
-export SPLIT_API_BASE=https://api.barclays.split.io
-export HARNESS_API_BASE=https://fme-barclays-validation.harness.io
+export SPLIT_API_BASE=https://api.split-stage.io
+export HARNESS_API_BASE=https://app.harness.io
 ```
 
 #### 2. API Configuration
