@@ -1,244 +1,259 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Split RUM Demo</title>
-<style>
-	body {
-  	  color: white;
-	  display: grid;
-	  place-items: center;
-	}
+	<style>
+		body {
+			color: white;
+			display: grid;
+			place-items: center;
+			margin: 0;
+			padding: 20px;
+		}
 
-	div.cta {
-		font-family: Helvetica, Charcoal, sans serif;
-		font-size: 50px;
-		color: black;
-		text-align: center;
-		background-color: #f2f2f2;
-		padding-top: 50px;
-  		padding-bottom: 50px;
-	}
+		div.cta {
+			font-family: Helvetica, Charcoal, sans-serif;
+			font-size: 50px;
+			color: black;
+			text-align: center;
+			background-color: #f2f2f2;
+			padding: 50px 20px;
+		}
 
-	div.cta-image {
-		text-align: center;
-	}
+		div.cta-image {
+			text-align: center;
+		}
 
-	div.buttons {
-		text-align: center;
-		padding-top: 25px;
-	}
+		div.buttons {
+			text-align: center;
+			padding-top: 25px;
+		}
 
-	img {
-		width: 100%;
-	}
+		img {
+			width: 100%;
+			height: auto;
+		}
 
-	.button {
-		background-color: white; 
-		border-radius: 8px; 
-		border: 2px solid rgb(205, 45, 47);
-		color: rgb(205, 45, 47); 
-		font-size: 24px; 
-		box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-	}
+		.button {
+			background-color: white;
+			border-radius: 8px;
+			border: 2px solid rgb(205, 45, 47);
+			color: rgb(205, 45, 47);
+			font-size: 24px;
+			padding: 12px 24px;
+			cursor: pointer;
+			box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			transition: background-color 0.3s ease;
+		}
 
-	.center {
-	  margin: 0;
-	  position: absolute;
-	  top: 50%;
-	  left: 50%;
-	  -ms-transform: translate(-50%, -50%);
-	  transform: translate(-50%, -50%);
-	}
-</style>
-<script src="https://cdn.split.io/sdk/split-10.23.0.min.js"></script>
-<script src="https://cdn.split.io/rum-agent/browser-rum-agent-0.3.0.full.min.js"></script>
-<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+		.button:hover {
+			background-color: rgb(205, 45, 47);
+			color: white;
+		}
 
-<script>
-  let splitClientApiKey = '$$SPLIT_CLIENT_API_KEY$$';
+		.center {
+			margin: 0;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+	</style>
+	<script src="https://cdn.split.io/sdk/split-10.23.0.min.js"></script>
+	<script src="https://cdn.split.io/rum-agent/browser-rum-agent-0.3.0.full.min.js"></script>
+	<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
 
-	function uuidv4() {
-	  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-	      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-	      return v.toString(16);
-	    });
-	}
+	<script>
+		let splitClientApiKey = '$$SPLIT_CLIENT_API_KEY$$';
 
-  const USER_ID = uuidv4();
+		function uuidv4() {
+			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+				const r = Math.random() * 16 | 0;
+				const v = c === 'x' ? r : (r & 0x3 | 0x8);
+				return v.toString(16);
+			});
+		}
 
-  SplitRumAgent.setup(splitClientApiKey, {
-  	debug: true
-  }
-  ).addIdentities([
-    { key: USER_ID, trafficType: 'user' }
-  ]);
+		const USER_ID = uuidv4();
 
-  // Register additional metrics
-  if (SplitRumAgent.routeChanges) SplitRumAgent.register(SplitRumAgent.routeChanges());
-  if (SplitRumAgent.webVitals) SplitRumAgent.register(SplitRumAgent.webVitals());
-</script>
+		SplitRumAgent.setup(splitClientApiKey, {
+			debug: true
+		}).addIdentities([
+			{ key: USER_ID, trafficType: 'user' }
+		]);
 
-<script>
-(function(w){
-  var g=w.__error={e1:[],l1(e){g.e1.push(e)},e2:[],l2(e){g.e2.push(e)}}
-  w.addEventListener('error', g.l1)
-  w.addEventListener('unhandledrejection', g.l2)
-}(window))
-</script>
+		if (SplitRumAgent.routeChanges) SplitRumAgent.register(SplitRumAgent.routeChanges());
+		if (SplitRumAgent.webVitals) SplitRumAgent.register(SplitRumAgent.webVitals());
+	</script>
 
-<script>
-	var start = new Date().getTime();
+	<script>
+		(function(w) {
+			const g = w.__error = {
+				e1: [],
+				l1(e) { g.e1.push(e); },
+				e2: [],
+				l2(e) { g.e2.push(e); }
+			};
+			w.addEventListener('error', g.l1);
+			w.addEventListener('unhandledrejection', g.l2);
+		}(window));
+	</script>
 
-	function logImpression(impressionData) {
-		console.log('impressionData', impressionData);
-	}
+	<script>
+		const start = new Date().getTime();
 
-    var factory = splitio({
-      core: {
-        authorizationKey: splitClientApiKey, 
-        key: USER_ID,
-        trafficType: 'user',
-        labelsEnabled: true
-      },
-      startup: {
-        	readyTimeout: 10
-      },
-      impressionListener: {
-	    	logImpression: logImpression
-  		},
-  		scheduler: {
-  			impressionsRefreshRate: 5,
-  			eventsPushRate: 5
-  		},
-      storage: {
-        	type: 'LOCALSTORAGE'
-      },
-  		streamingEnabled: true,
-		  debug: false
-    });
+		function logImpression(impressionData) {
+			console.log('impressionData', impressionData);
+		}
 
-  const initTimeInMillis = new Date().getTime();
-	var client = factory.client();
+		const factory = splitio({
+			core: {
+				authorizationKey: splitClientApiKey,
+				key: USER_ID,
+				trafficType: 'user',
+				labelsEnabled: true
+			},
+			urls: {
+				sdk: 'https://sdk.barclays.split.io/api',
+				events: 'https://events.barclays.split.io/api',
+				auth: 'https://auth.barclays.split.io/api',
+				telemetry: 'https://telemetry.barclays.split.io/api'
+			},
+			startup: {
+				readyTimeout: 10
+			},
+			impressionListener: {
+				logImpression: logImpression
+			},
+			scheduler: {
+				impressionsRefreshRate: 5,
+				eventsPushRate: 5
+			},
+			storage: {
+				type: 'LOCALSTORAGE'
+			},
+			streamingEnabled: true,
+			debug: false
+		});
 
-	client.on(client.Event.SDK_READY, function() {
-		console.log('INIT TIME IN MILLIS: ' + (new Date().getTime() - initTimeInMillis));	
-		$(document).ready(() => {
+		const initTimeInMillis = new Date().getTime();
+		const client = factory.client();
+
+		client.on(client.Event.SDK_READY, function() {
+			console.log('INIT TIME IN MILLIS: ' + (new Date().getTime() - initTimeInMillis));
+			$(document).ready(() => {
+				drawUI();
+			});
+		});
+
+		client.on(client.Event.SDK_READY_FROM_CACHE, function() {
+			console.log('SDK ready from cache in ' + (new Date().getTime() - initTimeInMillis) + 'ms');
+		});
+
+		client.on(client.Event.SDK_UPDATE, function() {
+			console.log("SDK update!");
 			drawUI();
 		});
-	});	
 
-	client.on(client.Event.SDK_READY_FROM_CACHE, function() {
-		console.log('SDK ready from cache in ' + (new Date().getTime() - initTimeInMillis) + 'ms');		
-		// $(document).ready(() => {
-		// 	drawUI();
-		// });
-	});
+		client.once(client.Event.SDK_READY_TIMED_OUT, function() {
+			console.log("SDK ready timed out!");
+		});
 
-	client.on(client.Event.SDK_UPDATE, function() {
-		console.log("SDK update!");
-		drawUI();
-	});
-
-	client.once(client.Event.SDK_READY_TIMED_OUT, function() {
-		console.log("SDK ready timed out!");
-	})
-
-	function handleTreatment(treatment) {
-	  if(treatment === 'red') {
-	    busyWait(200);
-	  } else if (treatment === 'blue') {
-	    busyWait(100);
-	  }  
-	}
-
-	function handleError() {
-		console.log('handleError');
-
-		const tee = client.getTreatment("erratum");
-		if(tee === 'on') {
-			console.log('erratum on');
-			if(Math.random() < 0.5) {
-				// throw new Error("exception erratum on");
-				SplitRumAgent.trackError('exception erratum on')				
+		function handleTreatment(treatment) {
+			if (treatment === 'red') {
+				busyWait(200);
+			} else if (treatment === 'blue') {
+				busyWait(100);
 			}
-		}	else if (tee === 'off') {
-			console.log('erratum off');
-			if(Math.random() < 0.1) {
-				// throw new Error("exception erratum off");
-				SplitRumAgent.trackError('exception erratum off')				
-			}
-		}	else if (tee === 'control') {
-			console.log('SDK not available!');
-		}		
-	}
-
-	function busyWait(sleepInMs) {
-	    const date = Date.now();
-	    let currentDate = null;
-	    do {
-	        currentDate = Date.now();
-	    } while (currentDate - date < sleepInMs);
-	}
-
-	function drawUI() {
-		console.log('drawUI');
-
-		var attributes = {
-			now : new Date().getTime(), // any time as milliseconds since epoch
-			region : 'EU'
 		}
-		var result = client.getTreatmentWithConfig("enigma", attributes);
-		handleTreatment(result.treatment);
 
-		drawScreen(result);
+		function handleError() {
+			console.log('handleError');
 
-		handleError();
-	}
+			const tee = client.getTreatment("erratum");
+			if (tee === 'on') {
+				console.log('erratum on');
+				if (Math.random() < 0.5) {
+					SplitRumAgent.trackError('exception erratum on');
+				}
+			} else if (tee === 'off') {
+				console.log('erratum off');
+				if (Math.random() < 0.1) {
+					SplitRumAgent.trackError('exception erratum off');
+				}
+			} else if (tee === 'control') {
+				console.log('SDK not available!');
+			}
+		}
 
-	function drawScreen(splitResult) {
-		console.log("drawScreen");
-		var configs = JSON.parse(splitResult.config);
-		document.getElementById("call-to-action").innerHTML = configs.text;
+		function busyWait(sleepInMs) {
+			const date = Date.now();
+			let currentDate = null;
+			do {
+				currentDate = Date.now();
+			} while (currentDate - date < sleepInMs);
+		}
 
-		var img = document.getElementById("banner-image");
-		img.src = configs.image;
-		img.style.width = configs.image_width;
-	}
+		function drawUI() {
+			console.log('drawUI');
 
-	function registerClick() {
-		// var start = new Date().getTime();
+			const attributes = {
+				now: new Date().getTime(),
+				region: 'EU'
+			};
+			const result = client.getTreatmentWithConfig("enigma", attributes);
+			handleTreatment(result.treatment);
 
-        var regions = [ "US", "EU", "JP"];
-        var status = [ "silver", "gold", "platinum"];
-        var n = Math.floor(Math.random() * 100);
-        var m = Math.floor(Math.random() * 100);
-        var properties = {
-            region : regions[n % regions.length], 
-            status : status[m % status.length],
-            type : 'donate',
-            timeInRegistrationMs : new Date().getTime() - start
-        };
-        var queued = client.track ('click', 0, properties);
-        let time = new Date().getTime();
-        time = time - start;
-        
-        alert("tracking a click to split: " + queued);
-        //useWrapper();
-	}
+			drawScreen(result);
 
-	function book() {
-		const startTime = new Date().getTime();
-		alert('book!');
-		const r = client.track('book', new Date().getTime() - startTime, {name: 'madrid', value: 42});
-		console.log(r);
-	}
-</script>
+			handleError();
+		}
+
+		function drawScreen(splitResult) {
+			console.log("drawScreen");
+			const configs = JSON.parse(splitResult.config);
+			document.getElementById("call-to-action").innerHTML = configs.text;
+
+			const img = document.getElementById("banner-image");
+			img.src = configs.image;
+			img.style.width = configs.image_width;
+		}
+
+		function registerClick() {
+			const regions = ["US", "EU", "JP"];
+			const status = ["silver", "gold", "platinum"];
+			const n = Math.floor(Math.random() * 100);
+			const m = Math.floor(Math.random() * 100);
+			const properties = {
+				region: regions[n % regions.length],
+				status: status[m % status.length],
+				type: 'donate',
+				timeInRegistrationMs: new Date().getTime() - start
+			};
+			const queued = client.track('click', 0, properties);
+			const time = new Date().getTime() - start;
+
+			alert("tracking a click to split: " + queued);
+		}
+
+		function book() {
+			const startTime = new Date().getTime();
+			alert('book!');
+			const r = client.track('book', new Date().getTime() - startTime, {name: 'madrid', value: 42});
+			console.log(r);
+		}
+	</script>
 </head>
 
 <body>
-	Multivariant Demo
+	<h1>Multivariant Demo</h1>
 	<div id="call-to-action" class="cta">Adopt a Cute Dog</div>
-	<div style="width: 40%;" class="cta-image"><img id="banner-image"/></div>
-	<div class="buttons" align="center">
+	<div style="width: 40%;" class="cta-image">
+		<img id="banner-image" alt="Banner"/>
+	</div>
+	<div class="buttons">
 		<button class="button" onclick="book()">BOOK</button>
 	</div>
 </body>
