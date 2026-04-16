@@ -1,0 +1,21 @@
+# Configuration with secrets
+config
+
+# Node modules
+node_modules/
+
+# Generated files
+*.html
+!*.html.template
+
+# Downloads directory
+downloads/
+
+# Editor swap files
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
