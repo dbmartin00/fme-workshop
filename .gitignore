@@ -1,5 +1,7 @@
 # Configuration with secrets
 config
+.env
+.env.local
 
 # Node modules
 node_modules/
