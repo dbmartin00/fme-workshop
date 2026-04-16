@@ -1,16 +1,28 @@
-This README is not a walkthrough. These are instructions for creating a workshop for a customer.
+# FME Workshop Setup
 
-Using node.js
+This is not a walkthrough. These are instructions for creating a workshop for a customer.
 
-Clone the fme-workshop repository, 
+## Quick Start
 
-https://github.com/dbmartin00/fme-workshop
+### Prerequisites
 
-```
+- Node.js installed
+- Git
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/dbmartin00/fme-workshop
+cd fme-workshop
+
+# Install dependencies
 npm install
 ```
 
-Edit the config file JSON
+### Configuration
+
+Create a `config` file (no .json extension) with your settings:
 
 ```json
 {
@@ -20,60 +32,233 @@ Edit the config file JSON
     "owner@example.com"
   ],
   "apiKey": "YOUR_API_KEY_HERE",
-  "accountIdentifier": "<optional - Harness account ID>",
-  "harnessOrgIdentifier": "<optional - Harness org ID>",
-  "orgIdentifier": "<optional - Split org ID if different>"
+  "accountIdentifier": "<Harness account ID>",
+  "harnessOrgIdentifier": "default",
+  "orgIdentifier": "<Split org ID if different>",
+  "clientSideApiKey": "<optional - for generate phase only>"
 }
 ```
 
-**IMPORTANT: API Key Requirements**
+**Configuration Fields:**
 
-- **`apiKey`** (Required): API key used for all API calls
-  - **All requests use `x-api-key` header with this value**
-  - Works for both Harness and Split.io APIs
-  - If using Harness integration, requires these bindings:
-    - FME Administrator
-    - FME Manager
-    - FME Account API (or Account Admin)
+| Field | Required | Description |
+|-------|----------|-------------|
+| `emails` | ✅ | Array of recipient email addresses |
+| `apiKey` | ✅ | API key for both Harness and Split APIs (sent via `x-api-key` header) |
+| `accountIdentifier` | Optional | Harness account ID (required for Harness integration) |
+| `harnessOrgIdentifier` | Optional | Harness organization ID (defaults to "default") |
+| `orgIdentifier` | Optional | Split organization ID if different from Harness |
+| `clientSideApiKey` | Optional | Pre-existing client-side API key (for generate-only mode) |
 
-Run the generator
+**API Key Requirements:**
+
+- **All requests use `x-api-key` header** with the `apiKey` value
+- Works for both Harness and Split.io APIs
+- If using Harness integration, the API key requires these bindings:
+  - FME Administrator
+  - FME Manager
+  - FME Account API (or Account Admin)
+
+## Usage
+
+### Two-Phase Operation
+
+The workshop generator operates in two phases that can be run together or separately:
+
+#### Phase 1: Setup & Initialize
+Creates/initializes Harness project, Split workspace, environments, segments, and feature flags.
 
 ```bash
-# Run both phases (setup + generate HTML)
-node index.js
-
-# Phase 1 only: Setup projects and initialize (no HTML generation)
 node index.js setup
-
-# Phase 2 only: Generate HTML files (requires Phase 1 to be done first)
-node index.js generate
-
-# Verbose mode (detailed logs, helpful for debugging)
-node index.js --verbose
-node index.js setup --verbose
-node index.js generate -v
 ```
 
-**Two Phases:**
-1. **Setup Phase**: Creates/initializes Harness project, Split workspace, environments, segments, and feature flags
-2. **Generate Phase**: Creates HTML files from templates with SDK configuration and packages them into a ZIP file
+#### Phase 2: Generate HTML
+Creates HTML files from templates with SDK configuration and packages them into a ZIP file.
 
-**Environment Variables** (optional):
 ```bash
-SPLIT_API_BASE=https://api.barclays.split.io                    # Default Split API endpoint
-HARNESS_API_BASE=https://fme-barclays-validation.harness.io     # Default Harness API endpoint
-VERBOSE=true                                                     # Enable verbose logging
+node index.js generate
 ```
 
-You create a new Workshop project with the usual suspects for flags.
+#### Run Both Phases
+```bash
+node index.js
+# or explicitly
+node index.js all
+```
 
-A new ZIP is created in the downloads subdirectory and your email addresses are printed out as a comma-separated list.  You need to email your customers with the ZIP attachment yourself.  This is no longer done by Workshop.
+### Verbose Mode
 
-Your download ZIP is the only copy that exists when you create it.
+Enable detailed logging for debugging:
 
+```bash
+# Add --verbose or -v to any command
+node index.js --verbose
+node index.js setup -v
+node index.js generate --verbose
+```
 
-To be fixed...
+**Verbose mode shows:**
+- Account and organization identifiers
+- Workspace and environment IDs
+- Individual feature flag operations
+- File processing details
+- Full error details with URLs and status codes
 
-Customer-facing README.html is currently empty
+### Serving HTML Files Locally
 
+After generating HTML files, you can serve them locally for testing:
 
+```bash
+# Start local web server
+node serve.js
+
+# Access at http://localhost:8000
+```
+
+The server:
+- ✅ Serves HTML files and assets (images, CSS, JS)
+- ✅ Provides auto-generated file listing page
+- ✅ Protects source code (index.js, config, etc.)
+- ✅ Default port: 8000 (override with `PORT=3000 node serve.js`)
+
+## Environment Variables
+
+Customize API endpoints and behavior using environment variables:
+
+```bash
+# Split API base URL (default: https://api.barclays.split.io)
+SPLIT_API_BASE=https://api.barclays.split.io
+
+# Harness API base URL (default: https://fme-barclays-validation.harness.io)
+HARNESS_API_BASE=https://fme-barclays-validation.harness.io
+
+# Enable verbose logging (default: false)
+VERBOSE=true
+
+# Server port for serve.js (default: 8000)
+PORT=3000
+```
+
+**Example with environment variables:**
+
+```bash
+VERBOSE=true SPLIT_API_BASE=https://custom-split.io node index.js setup
+```
+
+## Centralized API Configuration
+
+All API endpoints are configured in `index.js` under the `API` object:
+
+```javascript
+const API = {
+    harness: {
+        projects: (accountId, orgId) => `${HARNESS_API_BASE}/ng/api/projects?...`
+    },
+    split: {
+        workspaces: () => `${SPLIT_API_BASE}/internal/api/v2/workspaces`,
+        // ... other Split API endpoints
+    },
+    sdk: {
+        urls: {
+            sdk: 'https://sdk.barclays.split.io/api',
+            events: 'https://events.barclays.split.io/api',
+            auth: 'https://auth.barclays.split.io/api',
+            telemetry: 'https://telemetry.barclays.split.io/api'
+        }
+    }
+};
+```
+
+**SDK URL Injection:**
+- HTML templates are automatically injected with custom Barclays SDK URLs
+- The SDK configuration block in each HTML file includes the `urls` object
+- CDN URLs for loading the SDK library remain unchanged
+- All API calls go to Barclays-specific endpoints
+
+## Output
+
+After successful execution:
+
+1. **HTML Files**: Generated in the project root directory
+   - `enigma.html`
+   - `erratum.html`
+   - `form_follies.html`
+   - `magic_boxes.html`
+   - `modal_madness.html`
+
+2. **ZIP Archive**: Created in `downloads/` directory
+   - Filename: `splitworkshop-<orgIdentifier>.zip`
+   - Contains: All HTML files, images, and README
+
+3. **Email List**: Printed as comma-separated list
+   - **Manual action required**: You must email the ZIP to recipients yourself
+   - The workshop no longer sends emails automatically
+
+## Error Handling
+
+The tool provides clear error messages with context:
+
+### 401 Authentication Errors
+```
+✗ Failed to get workspace
+  Authentication failed (401)
+  URL: https://api.barclays.split.io/internal/api/v2/workspaces
+  → Check that 'apiKey' in config file is valid and has proper permissions
+  → All API calls use 'x-api-key' header with apiKey value
+```
+
+### Missing Environment
+```
+❌ Operation failed: Environment not found. Run "node index.js setup" first to create the environment.
+```
+
+### General Best Practices
+- Use `--verbose` flag when troubleshooting
+- Ensure Split workspace "FME-Workshop" exists before running setup
+- Run `setup` phase before `generate` phase if running separately
+- Check that API key has proper permissions for both Harness and Split
+
+## Security
+
+**Protected Files (.gitignore):**
+- `config` - Contains API keys and secrets
+- `*.html` - Generated files
+- `downloads/` - ZIP archives
+- `node_modules/` - Dependencies
+
+**Safe to Commit:**
+- `config.sample` - Template without secrets
+- `*.html.template` - HTML templates
+- Source code changes
+
+## Troubleshooting
+
+### Browser shows old Split.io URLs
+
+**Solution**: Clear browser cache or open in incognito mode
+```bash
+# Stop server and restart
+node serve.js
+# Open http://localhost:8000 in incognito mode
+```
+
+### "Module not found" error
+
+**Solution**: Ensure you're in the project root directory
+```bash
+cd /path/to/fme-workshop
+node index.js
+```
+
+### 404 errors when accessing Split API
+
+**Solution**: Verify the Split workspace exists and API key is correct
+```bash
+node index.js setup --verbose
+```
+
+## Notes
+
+- Your download ZIP is the only copy that exists when you create it
+- Customer-facing README.html is currently empty (to be fixed)
+- The tool creates a new Workshop project with standard feature flags
