@@ -126,11 +126,11 @@ The server:
 Customize API endpoints and behavior using environment variables:
 
 ```bash
-# Split API base URL (default: https://api.barclays.split.io)
-SPLIT_API_BASE=https://api.barclays.split.io
+# Split API base URL (default: https://api.split.io)
+SPLIT_API_BASE=https://api.split.io
 
-# Harness API base URL (default: https://fme-barclays-validation.harness.io)
-HARNESS_API_BASE=https://fme-barclays-validation.harness.io
+# Harness API base URL (default: https://app.harness.io)
+HARNESS_API_BASE=https://app.harness.io
 
 # Enable verbose logging (default: false)
 VERBOSE=true
@@ -139,17 +139,20 @@ VERBOSE=true
 PORT=3000
 ```
 
-**Example with environment variables:**
+**Example with custom environment:**
 
 ```bash
-VERBOSE=true SPLIT_API_BASE=https://custom-split.io node index.js setup
+# For custom Split.io deployments (e.g., on-premise)
+SPLIT_API_BASE=https://api.custom.split.io node index.js setup
 ```
 
 ## Centralized API Configuration
 
-All API endpoints are configured in `index.js` under the `API` object:
+All API endpoints are configured in `index.js` and derived from environment variables:
 
 ```javascript
+const SPLIT_API_BASE = process.env.SPLIT_API_BASE || 'https://api.split.io';
+
 const API = {
     harness: {
         projects: (accountId, orgId) => `${HARNESS_API_BASE}/ng/api/projects?...`
@@ -159,21 +162,17 @@ const API = {
         // ... other Split API endpoints
     },
     sdk: {
-        urls: {
-            sdk: 'https://sdk.barclays.split.io/api',
-            events: 'https://events.barclays.split.io/api',
-            auth: 'https://auth.barclays.split.io/api',
-            telemetry: 'https://telemetry.barclays.split.io/api'
-        }
+        urls: deriveSDKUrls(SPLIT_API_BASE)  // Automatically derives sdk.*, events.*, etc.
     }
 };
 ```
 
 **SDK URL Injection:**
-- HTML templates are automatically injected with custom Barclays SDK URLs
-- The SDK configuration block in each HTML file includes the `urls` object
+- SDK URLs are automatically derived from `SPLIT_API_BASE` environment variable
+- `api.split.io` → `sdk.split.io`, `events.split.io`, `auth.split.io`, `telemetry.split.io`
+- HTML templates are injected with these URLs during generation
 - CDN URLs for loading the SDK library remain unchanged
-- All API calls go to Barclays-specific endpoints
+- Works with custom/on-premise Split.io deployments
 
 ## Output
 
@@ -202,7 +201,7 @@ The tool provides clear error messages with context:
 ```
 ✗ Failed to get workspace
   Authentication failed (401)
-  URL: https://api.barclays.split.io/internal/api/v2/workspaces
+  URL: https://api.split.io/internal/api/v2/workspaces
   → Check that 'apiKey' in config file is valid and has proper permissions
   → All API calls use 'x-api-key' header with apiKey value
 ```
