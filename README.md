@@ -22,6 +22,27 @@ npm install
 
 ### Configuration
 
+#### 1. Environment Variables (Optional)
+
+Copy `.env.example` to `.env` and customize for your environment:
+
+```bash
+cp .env.example .env
+```
+
+**For Barclays deployment:**
+```bash
+cp .env.barclays .env
+```
+
+Or set environment variables directly:
+```bash
+export SPLIT_API_BASE=https://api.barclays.split.io
+export HARNESS_API_BASE=https://fme-barclays-validation.harness.io
+```
+
+#### 2. API Configuration
+
 Create a `config` file (no .json extension) with your settings:
 
 ```json
@@ -123,27 +144,32 @@ The server:
 
 ## Environment Variables
 
-Customize API endpoints and behavior using environment variables:
+Environment variables can be set via:
+1. **`.env` file** (recommended) - Copy `.env.example` and customize
+2. **Command line** - Prefix commands with `VAR=value`
+3. **Shell export** - `export VAR=value` for session-wide settings
+
+**Available variables:**
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SPLIT_API_BASE` | `https://api.split.io` | Split.io API base URL (auto-derives SDK endpoints) |
+| `HARNESS_API_BASE` | `https://app.harness.io` | Harness platform base URL |
+| `VERBOSE` | `false` | Enable detailed logging |
+| `PORT` | `8000` | Development server port |
+
+**Quick Examples:**
 
 ```bash
-# Split API base URL (default: https://api.split.io)
-SPLIT_API_BASE=https://api.split.io
+# Use .env file (recommended)
+cp .env.barclays .env
+node index.js setup
 
-# Harness API base URL (default: https://app.harness.io)
-HARNESS_API_BASE=https://app.harness.io
-
-# Enable verbose logging (default: false)
-VERBOSE=true
-
-# Server port for serve.js (default: 8000)
-PORT=3000
-```
-
-**Example with custom environment:**
-
-```bash
-# For custom Split.io deployments (e.g., on-premise)
+# Or set inline
 SPLIT_API_BASE=https://api.custom.split.io node index.js setup
+
+# Multiple variables
+SPLIT_API_BASE=https://api.barclays.split.io VERBOSE=true node index.js setup
 ```
 
 ## Centralized API Configuration
