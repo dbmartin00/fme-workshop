@@ -3,8 +3,10 @@
     "admin@example.com",
     "developer@example.com",
     "owner@example.com"
-  ],  
-  "apiKey": "sat.******** etc."
-  "accountIdentifier": "<from your logged in url>",
-  "orgIdentifier": "<from your logged in url>"
+  ],
+  "apiKey": "YOUR_API_KEY_HERE",
+  "accountIdentifier": "<optional - Harness account ID>",
+  "harnessOrgIdentifier": "default",
+  "orgIdentifier": "<optional - Split org ID if different from Harness>",
+  "clientSideApiKey": "<optional - for generate phase only>"
 }
