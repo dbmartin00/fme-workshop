@@ -164,14 +164,15 @@ Environment variables can be set via:
 
 ```bash
 # Use .env file (recommended)
-cp .env.barclays .env
+cp .env.example .env
+# Edit .env to set SPLIT_API_BASE
 node index.js setup
 
-# Or set inline
-SPLIT_API_BASE=https://api.custom.split.io node index.js setup
+# Or set inline for staging
+SPLIT_API_BASE=https://api.split-stage.io node index.js setup
 
 # Multiple variables
-SPLIT_API_BASE=https://api.barclays.split.io VERBOSE=true node index.js setup
+SPLIT_API_BASE=https://api.custom.split.io VERBOSE=true node index.js setup
 ```
 
 ## Centralized API Configuration
