@@ -371,8 +371,8 @@ async function createSegments() {
     for(const segment of defsJson) {
         const data = {
             name: segment.name,
-            description: segment.description,
-            owners: [{ id: '_project_all_users', type: 'Team', name: 'All Users' }]
+            description: segment.description
+            // Omit owners - they are now optional and will be auto-assigned by the system
         };
 
         // Create segment
@@ -455,8 +455,8 @@ async function createSplits() {
             headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
             data: {
                 name: splitName,
-                description: 'created for Split Workshop',
-                owners: [{ id: '_project_all_users', type: 'Team', name: 'All Users' }]
+                description: 'created for Split Workshop'
+                // Omit owners - they are now optional and will be auto-assigned by the system
             }
         };
 
