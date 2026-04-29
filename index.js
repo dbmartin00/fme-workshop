@@ -103,6 +103,9 @@ function logError(message, error) {
                 if (VERBOSE) {
                     console.error(`  URL: ${url}`);
                     console.error(`  Details: ${error.message}`);
+                    if (error.response.data) {
+                        console.error(`  Response body: ${JSON.stringify(error.response.data, null, 2)}`);
+                    }
                 }
             }
         } else if (VERBOSE) {
@@ -371,8 +374,8 @@ async function createSegments() {
     for(const segment of defsJson) {
         const data = {
             name: segment.name,
-            description: segment.description
-            // Omit owners - they are now optional and will be auto-assigned by the system
+            description: segment.description,
+            owners: [{ id: '_project_all_users', type: 'Team' }]
         };
 
         // Create segment
@@ -455,8 +458,8 @@ async function createSplits() {
             headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
             data: {
                 name: splitName,
-                description: 'created for Split Workshop'
-                // Omit owners - they are now optional and will be auto-assigned by the system
+                description: 'created for Split Workshop',
+                owners: [{ id: '_project_all_users', type: 'Team' }]
             }
         };
 
