@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Split Rollout Example</title>
+  <title>Harness FME Rollout Example</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html,
     body {
-      background: #F2F4F7;
+      background: #000000;
       font-family: sans-serif;
     }
 
@@ -61,6 +61,32 @@
       to {
         transform: rotate(360deg);
       }
+    }
+
+    /* Logo container with icon + text */
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    .logo-text {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
     }
   </style>
   <script src="https://cdn.split.io/sdk/split-10.22.4.min.js"></script>
@@ -187,7 +213,10 @@
 <body>
   <div class="container mx-auto">
     <header>
-      <img src="images/logo-2023.svg" alt="Split's logo" class="mx-auto my-6">
+      <div class="logo">
+        <img src="images/fme-icon.svg" alt="Harness FME">
+        <span class="logo-text">Feature Management &amp; Experimentation</span>
+      </div>
     </header>
 
     <main class="root">
