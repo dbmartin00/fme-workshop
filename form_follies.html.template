@@ -9,24 +9,29 @@
     /* Set the height and background color of the banner */
     .banner {
       padding: 20px;
-      background-color: #491b65;
+      background-color: #000000;
       margin-bottom: 20px;
     }
 
-    /* Center the logo vertically and horizontally */
+    /* Logo container with icon + text */
     .logo {
-      height: 60px;
       display: flex;
-      justify-content: left;
-      align-items: left;
+      align-items: center;
+      gap: 12px;
     }
 
-    /* Style the logo image */
+    /* Style the logo icon */
     .logo img {
-      height: 60px;
-      padding: 10px;
-      margin: 0 auto;
-      max-width: 100%;
+      height: 32px;
+      width: auto;
+    }
+
+    /* Style the logo text */
+    .logo-text {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
     }
 
     /* Style the banner text */
@@ -113,7 +118,8 @@
 <body>
   <header class="banner">
     <div class="logo">
-      <img src="images/logo-2023.svg" alt="Split Logo">
+      <img src="images/fme-icon.svg" alt="Harness FME">
+      <span class="logo-text">Feature Management &amp; Experimentation</span>
     </div>
   </header>
 

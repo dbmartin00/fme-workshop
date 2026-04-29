@@ -1,0 +1,12 @@
+{
+  "emails": [
+    "admin@example.com",
+    "developer@example.com",
+    "owner@example.com"
+  ],
+  "apiKey": "sat.NjFjYTRjZjAtNTlhMC00OD.69f02aeb281bef34d60a6303.zOsJ00u8Uqo7VfGNHl32",
+  "accountIdentifier": "NjFjYTRjZjAtNTlhMC00OD",
+  "harnessOrgIdentifier": "FME_Preview_Organization",
+  "orgIdentifier": "36316361-3463-6630-2d35-3961302d3438",
+  "clientSideApiKey": "<optional - for generate phase only>"
+}

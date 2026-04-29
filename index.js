@@ -103,6 +103,9 @@ function logError(message, error) {
                 if (VERBOSE) {
                     console.error(`  URL: ${url}`);
                     console.error(`  Details: ${error.message}`);
+                    if (error.response.data) {
+                        console.error(`  Response body: ${JSON.stringify(error.response.data, null, 2)}`);
+                    }
                 }
             }
         } else if (VERBOSE) {
@@ -372,7 +375,7 @@ async function createSegments() {
         const data = {
             name: segment.name,
             description: segment.description,
-            owners: [{ id: '_project_all_users', type: 'Team', name: 'All Users' }]
+            owners: [{ id: '_project_all_users', type: 'Team' }]
         };
 
         // Create segment
@@ -456,7 +459,7 @@ async function createSplits() {
             data: {
                 name: splitName,
                 description: 'created for Split Workshop',
-                owners: [{ id: '_project_all_users', type: 'Team', name: 'All Users' }]
+                owners: [{ id: '_project_all_users', type: 'Team' }]
             }
         };
 
