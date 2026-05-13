@@ -8,5 +8,6 @@
   "accountIdentifier": "<optional - Harness account ID>",
   "harnessOrgIdentifier": "default",
   "orgIdentifier": "<optional - Split org ID if different from Harness>",
-  "clientSideApiKey": "<optional - for generate phase only>"
+  "clientSideApiKey": "<optional - for generate phase only>",
+  "workspaceName": "FME-Workshop"
 }

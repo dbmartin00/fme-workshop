@@ -135,7 +135,7 @@ try {
     process.exit(1);
 }
 
-const { emails, apiKey, accountIdentifier, harnessOrgIdentifier, orgIdentifier, clientSideApiKey: configClientKey } = config;
+const { emails, apiKey, accountIdentifier, harnessOrgIdentifier, orgIdentifier, clientSideApiKey: configClientKey, workspaceName = "FME-Workshop" } = config;
 
 // Validate required fields
 if (!emails || !Array.isArray(emails) || emails.length === 0) {
@@ -185,8 +185,14 @@ const instance = axios.create({
 // ----------------------------
 // Step Functions
 // ----------------------------
-const projectName = 'FME-Workshop';
+const projectName = workspaceName;
+// Harness identifiers can only contain alphanumeric, underscore, and $ characters
+// Convert hyphens to underscores for Harness compatibility
+const harnessIdentifier = workspaceName.replace(/-/g, '_');
 let projectIdentifier;  // This will map to Split workspace ID
+let environmentId;      // Split environment ID
+let clientSideApiKey;   // Client-side API key for SDK
+let trafficTypeId;      // Traffic type ID (e.g., 'user')
 
 async function createProject() {
     if (!useHarness) {
@@ -199,7 +205,7 @@ async function createProject() {
     const body = {
         "project": {
             "orgIdentifier": harnessOrgIdentifier,
-            "identifier": "FMEWorkshop",
+            "identifier": harnessIdentifier,
             "name": projectName,
             "color": "skyblue",
             "description": "FME Workshop",
@@ -218,7 +224,7 @@ async function createProject() {
     } catch (error) {
         if (error?.response?.data?.code === 'DUPLICATE_FIELD') {
             logVerbose('Harness project already exists, reusing');
-            projectIdentifier = "FMEWorkshop";
+            projectIdentifier = harnessIdentifier;
         } else {
             logError('Failed to create Harness project', error);
             throw error;
@@ -255,8 +261,8 @@ async function getWorkspaces() {
         const response = await axios.get(API.split.workspaces(), { headers: {'x-api-key': apiKey}});
 
         // If we have a Harness projectIdentifier, try to find matching workspace
-        // Otherwise look for FME-Workshop by name
-        const searchName = "FME-Workshop";
+        // Otherwise look for workspace by name from config
+        const searchName = workspaceName;
 
         for(const ws of response.data.objects) {
             if(ws.name === searchName) {
