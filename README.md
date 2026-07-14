@@ -2,6 +2,19 @@
 
 This is not a walkthrough. These are instructions for creating a workshop for a customer.
 
+Create a new project with flags in the customer's account.  Give them customized HTML
+to toggle their flags themselves.
+
+- Configure environment variables, including creating an API key with these bindings:
+  - FME Administrator
+  - FME Manager
+  - FME Account API (or Account Admin)
+- Run the script to create a new project, flags, etc.
+- Distribute the ZIP of HTML to customers
+
+Historically, customers walked through the HTML during a Workshop call.
+If you can't provision Workshop in their environment, you can provision in your own and walk them through it yourself..
+
 ## Quick Start
 
 ### Prerequisites
